@@ -1,8 +1,9 @@
 use embedded_hal::delay::DelayUs;
 use esp_idf_hal::delay::FreeRtos;
+use esp_idf_hal::gpio::Pins;
+use esp_idf_hal::i2c::I2C0;
 use esp_idf_hal::{
     i2c::{I2cConfig, I2cDriver},
-    peripherals::Peripherals,
     prelude::*,
 };
 use si70xx::Si70xx;
@@ -22,16 +23,14 @@ pub enum SensorMeasure {
 }
 
 impl Si70xxSensor {
-    pub fn init() -> Result<Sender<SensorMeasure>, RoomSensorError> {
+    pub fn init(pins: Pins, i2c0: I2C0) -> Result<Sender<SensorMeasure>, RoomSensorError> {
         log::info!("init sensor!");
 
-        let peripherals = Peripherals::take()?;
-
-        let sda = peripherals.pins.gpio21;
-        let scl = peripherals.pins.gpio22;
+        let sda = pins.gpio21;
+        let scl = pins.gpio22;
 
         let config = I2cConfig::new().baudrate(100.kHz().into());
-        let i2c = I2cDriver::new(peripherals.i2c0, sda, scl, &config)?;
+        let i2c = I2cDriver::new(i2c0, sda, scl, &config)?;
         let sensor = Si70xx::new(i2c);
 
         let tx = Si70xxSensor::run_sensor_handler(sensor);

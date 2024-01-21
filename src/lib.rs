@@ -6,6 +6,7 @@ use crate::si70xx_sensor::SensorMeasure;
 pub mod room_sensor;
 pub mod sensor;
 pub mod si70xx_sensor;
+pub mod wifi;
 
 #[derive(Error, Debug)]
 pub enum RoomSensorError {

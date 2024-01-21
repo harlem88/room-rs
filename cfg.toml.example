@@ -1,0 +1,3 @@
+[http-client]
+wifi_ssid = "INSERT HERE SSID"
+wifi_psk = "INSERT HERE PSW"
