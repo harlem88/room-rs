@@ -9,6 +9,7 @@ pub async fn init_wifi(
     ssid: &str,
     password: &str,
     modem: Modem,
+    timer_service: &EspTaskTimerService,
 ) -> Result<AsyncWifi<EspWifi<'static>>, RoomSensorError> {
     let sys_loop = EspSystemEventLoop::take()?;
     let nvs = EspDefaultNvsPartition::take()?;
@@ -16,15 +17,15 @@ pub async fn init_wifi(
     let mut wifi_driver = EspWifi::new(modem, sys_loop.clone(), Some(nvs))?;
 
     wifi_driver.set_configuration(&Configuration::Client(ClientConfiguration {
-        ssid: ssid.into(),
-        password: password.into(),
+        ssid: ssid.try_into().unwrap(),
+        password: password.try_into().unwrap(),
         ..Default::default()
     }))?;
 
     Ok(AsyncWifi::wrap(
         wifi_driver,
         sys_loop.clone(),
-        EspTaskTimerService::new()?,
+        timer_service.clone(),
     )?)
 }
 

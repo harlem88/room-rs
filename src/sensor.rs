@@ -5,13 +5,13 @@ use crate::room_sensor::SensorRead;
 use crate::si70xx_sensor::SensorMeasure;
 use crate::RoomSensorError;
 
-pub enum Sensors {
-    Humidity(String, HumiditySensor),
-    Temperature(String, TemperatureSensor),
+pub enum Sensors<'a> {
+    Humidity(&'a str, HumiditySensor),
+    Temperature(&'a str, TemperatureSensor),
 }
 
-impl Sensors {
-    pub fn humidity(name: String, sensor: Sender<SensorMeasure>) -> Sensors {
+impl<'a> Sensors<'a> {
+    pub fn humidity(name: &str, sensor: Sender<SensorMeasure>) -> Sensors {
         Sensors::Humidity(
             name,
             HumiditySensor {
@@ -20,7 +20,7 @@ impl Sensors {
         )
     }
 
-    pub fn temperature(name: String, sensor: Sender<SensorMeasure>) -> Sensors {
+    pub fn temperature(name: &str, sensor: Sender<SensorMeasure>) -> Sensors {
         Sensors::Temperature(
             name,
             TemperatureSensor {
