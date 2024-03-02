@@ -25,13 +25,17 @@ embassy = ["esp-idf-svc/embassy-sync", "esp-idf-svc/critical-section", "esp-idf-
 
 [dependencies]
 log = { version = "0.4", default-features = false }
-esp-idf-svc = { version = "0.47.3", default-features = false }
-embedded-hal = "1.0.0-rc.1"
-esp-idf-hal = "0.42.5"
+embassy-futures = "0.1"
+esp-idf-svc = { version = "0.48.0", default-features = false }
+embedded-hal = "1.0.0"
+esp-idf-hal = "0.43.0"
+eyre = "0.6.12"
 si70xx = "0.1.0"
 toml-cfg = "0.1.3"
 tokio = { version = "1.35.1", features = ["sync", "rt", "macros"] }
 thiserror = "1.0.56"
 
+
 [build-dependencies]
 embuild = "0.31.4"
+toml-cfg = "0.1.3"

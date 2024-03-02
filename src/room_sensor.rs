@@ -1,50 +1,54 @@
-use embedded_hal::delay::DelayUs;
-use esp_idf_hal::delay::FreeRtos;
-
 use crate::sensor::Sensors;
-use crate::RoomSensorError;
+use crate::{RoomSensorError, SensorValue};
 
 pub(crate) trait SensorRead<T> {
     async fn read(&self) -> Result<T, RoomSensorError>;
 }
 
-pub struct Room {
-    name: String,
-    sensors: Vec<Sensors>,
+pub struct Room<'a> {
+    name: &'a str,
+    sensors: Vec<Sensors<'a>>,
 }
 
-impl Room {
-    pub fn new(name: String) -> Self {
+impl<'a> Room<'a> {
+    pub fn new(name: &'a str) -> Self {
         Room {
             name,
             sensors: Vec::new(),
         }
     }
 
-    pub fn add_sensor(&mut self, sensor: Sensors) {
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
+    pub fn add_sensor(&mut self, sensor: Sensors<'a>) {
         self.sensors.push(sensor)
     }
 
-    pub async fn collect(&self) {
+    pub async fn collect(&self) -> Vec<SensorValue> {
+        let mut values: Vec<SensorValue> = vec![];
         for sensor in &self.sensors {
-            match sensor {
-                Sensors::Humidity(name, sensor) => {
+            let (name, value) = match sensor {
+                Sensors::Humidity(sensor_name, sensor) => {
                     let Ok(value) = sensor.read().await else {
-                        log::info!("none");
+                        log::warn!("Unable to read humidity-sensor");
                         continue;
                     };
 
-                    log::info!("hum {}", value)
+                    (sensor_name.to_string(), value.to_be_bytes().to_vec())
                 }
-                Sensors::Temperature(name, sensor) => {
+                Sensors::Temperature(sensor_name, sensor) => {
                     let Ok(value) = sensor.read().await else {
-                        log::info!("none");
+                        log::warn!("Unable to read temperature-sensor");
                         continue;
                     };
-                    log::info!("temp {}", value)
+
+                    (sensor_name.to_string(), value.to_be_bytes().to_vec())
                 }
-            }
-            FreeRtos.delay_ms(100u32);
+            };
+            values.push(SensorValue { name, value })
         }
+        values
     }
 }

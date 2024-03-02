@@ -1,4 +1,3 @@
-use embedded_hal::delay::DelayUs;
 use esp_idf_hal::delay::FreeRtos;
 use esp_idf_hal::gpio::Pins;
 use esp_idf_hal::i2c::I2C0;
@@ -42,8 +41,19 @@ impl Si70xxSensor {
         tokio::spawn(async move {
             while let Some(message) = rx.recv().await {
                 log::info!("measure sensor!");
-                let _ = sensor.measure();
-                FreeRtos.delay_ms(20u32);
+
+                if let Err(err) = sensor.measure() {
+                    log::error!("Unable to measure sensor {:?}", err);
+                    match message {
+                        SensorMeasure::Humidity { resp } | SensorMeasure::Temperature { resp } => {
+                            let _ = resp.send(None);
+                        }
+                    };
+
+                    continue;
+                };
+
+                FreeRtos::delay_ms(20);
                 match message {
                     SensorMeasure::Humidity { resp } => {
                         let value = match sensor.read_humidity() {
@@ -59,7 +69,7 @@ impl Si70xxSensor {
                         };
                         let _ = resp.send(value);
                     }
-                }
+                };
             }
         });
         tx
