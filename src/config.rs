@@ -7,4 +7,6 @@ pub struct Config {
     wifi_psk: &'static str,
     #[default("localhost")]
     mqtt_host: &'static str,
+    #[default("room-1")]
+    room_name: &'static str,
 }

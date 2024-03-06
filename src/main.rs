@@ -7,7 +7,7 @@ use esp_idf_hal::i2c::I2C0;
 use esp_idf_hal::peripherals::Peripherals;
 use esp_idf_svc::mqtt::client::QoS::AtMostOnce;
 use esp_idf_svc::mqtt::client::{
-    EspAsyncMqttClient, EspAsyncMqttConnection, EventPayload, MqttClientConfiguration,
+    EspAsyncMqttClient, EspAsyncMqttConnection, MqttClientConfiguration,
 };
 
 use esp_idf_svc::timer::{EspTaskTimerService, EspTimerService};
@@ -94,12 +94,14 @@ pub async fn sensor_reads(
     client: &mut EspAsyncMqttClient,
     timer_service: &EspTaskTimerService,
 ) -> Result<(), RoomSensorError> {
-    let mut room = Room::new("room1");
+    let app_config = room_sensor_rs::config::CONFIG;
+
+    let mut room = Room::new(app_config.room_name);
 
     let si70xx = Si70xxSensor::init(pins, i2c0)?;
 
-    room.add_sensor(Sensors::humidity("humidity-1", si70xx.clone()));
-    room.add_sensor(Sensors::temperature("temperature-1", si70xx));
+    room.add_sensor(Sensors::humidity("humidity", si70xx.clone()));
+    room.add_sensor(Sensors::temperature("temperature", si70xx));
 
     let topic_root = format!("/home/{}", room.get_name());
     let mut timer = timer_service.timer_async()?;
