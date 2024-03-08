@@ -12,6 +12,4 @@ fn main() {
     if app_config.wifi_ssid == "" {
         panic!("You need to set the Wi-Fi credentials in `cfg.toml`!");
     }
-
-    embuild::espidf::sysenv::output();
 }
