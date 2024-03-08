@@ -1,16 +1,17 @@
-use crate::RoomSensorError;
 use esp_idf_hal::modem::Modem;
 use esp_idf_svc::eventloop::EspSystemEventLoop;
 use esp_idf_svc::nvs::EspDefaultNvsPartition;
 use esp_idf_svc::timer::EspTaskTimerService;
 use esp_idf_svc::wifi::{AsyncWifi, ClientConfiguration, Configuration, EspWifi};
 
+use crate::RoomError;
+
 pub async fn init_wifi(
     ssid: &str,
     password: &str,
     modem: Modem,
     timer_service: &EspTaskTimerService,
-) -> Result<AsyncWifi<EspWifi<'static>>, RoomSensorError> {
+) -> Result<AsyncWifi<EspWifi<'static>>, RoomError> {
     let sys_loop = EspSystemEventLoop::take()?;
     let nvs = EspDefaultNvsPartition::take()?;
 
@@ -29,7 +30,7 @@ pub async fn init_wifi(
     )?)
 }
 
-pub async fn connect_wifi(wifi: &mut AsyncWifi<EspWifi<'static>>) -> Result<(), RoomSensorError> {
+pub async fn connect_wifi(wifi: &mut AsyncWifi<EspWifi<'static>>) -> Result<(), RoomError> {
     wifi.start().await?;
     wifi.connect().await?;
 

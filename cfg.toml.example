@@ -1,4 +1,4 @@
-[room-sensor-rs]
+[room-rs]
 wifi_ssid = "INSERT HERE SSID"
 wifi_psk = "INSERT HERE PSW"
 mqtt_host = "INSERT HERE YOUR MQTT HOST"
