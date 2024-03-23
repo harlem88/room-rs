@@ -9,8 +9,8 @@ use esp_idf_svc::mqtt::client::QoS::AtMostOnce;
 use esp_idf_svc::mqtt::client::{
     EspAsyncMqttClient, EspAsyncMqttConnection, MqttClientConfiguration,
 };
-use eyre::Result;
 use esp_idf_svc::timer::{EspTaskTimerService, EspTimerService};
+use eyre::Result;
 
 use room_rs::wifi;
 

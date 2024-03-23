@@ -8,6 +8,7 @@ rust-version = { workspace = true }
 [workspace]
 resolver = "2"
 members = [
+    "room-relay-rs",
     "room-sensor-rs",
 ]
 
