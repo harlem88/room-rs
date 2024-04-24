@@ -9,4 +9,6 @@ pub struct Config {
     mqtt_host: &'static str,
     #[default("room-1")]
     room_name: &'static str,
+    #[default("home")]
+    topic_root: &'static str,
 }

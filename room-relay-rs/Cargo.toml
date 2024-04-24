@@ -1,5 +1,5 @@
 [package]
-name = "room-sensor-rs"
+name = "room-relay-rs"
 version = "0.1.0"
 edition.workspace = true
 rust-version.workspace = true
@@ -18,12 +18,11 @@ embassy = ["esp-idf-svc/embassy-sync", "esp-idf-svc/critical-section", "esp-idf-
 [dependencies]
 log = { workspace = true, default-features = false }
 embassy-futures = { workspace = true }
-esp-idf-svc = { workspace = true }
+esp-idf-svc = { workspace = true}
 embedded-hal = { workspace = true }
 esp-idf-hal = { workspace = true }
 eyre = { workspace = true }
 room-rs = { path = ".."}
-si70xx = "0.1.0"
 toml-cfg = { workspace = true }
 tokio = { workspace = true, features = ["sync", "rt", "macros"] }
 thiserror = { workspace = true }

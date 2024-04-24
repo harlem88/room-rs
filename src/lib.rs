@@ -1,7 +1,7 @@
 use thiserror::Error;
 
-pub mod wifi;
 pub mod config;
+pub mod wifi;
 
 #[derive(Error, Debug)]
 pub enum RoomError {
